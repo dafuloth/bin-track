@@ -140,6 +140,31 @@
       background: var(--status-bg);
       color: var(--status-text);
     }
+    @media (max-width: 600px) {
+      body {
+        padding: 1.25rem 0.75rem;
+      }
+      h1 {
+        font-size: 1.45rem;
+      }
+      .cards {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .card {
+        padding: 0.75rem 0.9rem;
+      }
+      table {
+        font-size: 0.82rem;
+      }
+      th, td {
+        padding: 0.55rem 0.45rem;
+      }
+      thead th,
+      tbody th[scope="row"] {
+        white-space: normal;
+      }
+    }
   </style>
 </head>
 <body>
@@ -154,7 +179,6 @@
       <div class="cards">
         <div class="card"><div class="card-title">Rubbish</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
         <div class="card"><div class="card-title">Recycling</div><div class="card-date">Thu 19 Nov 2026 <span class="badge status">In progress</span></div><div class="card-freq">Every other Thursday</div></div>
-        <div class="card"><div class="card-title">Food Waste</div><div class="card-date">Thu 19 Nov 2026 <span class="badge status">In progress</span></div><div class="card-freq">Every Thursday</div></div>
         <div class="card"><div class="card-title">Paper &amp; Cardboard</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
       </div>
     </section>
@@ -166,11 +190,11 @@
           <thead>
             <tr>
               <th>Week (Thu)</th>
-              <th>Rubbish</th><th>Recycling</th><th>Food Waste</th><th>Paper &amp; Cardboard</th>
+              <th>Rubbish</th><th>Recycling</th><th>Paper &amp; Cardboard</th>
             </tr>
           </thead>
           <tbody>
-          <tr><th scope="row">Thu 12 Nov 2026</th><td><span class="time">8:31am</span></td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td><span class="time">8:42am</span></td></tr>
+          <tr><th scope="row">Thu 12 Nov 2026</th><td><span class="time">8:31am</span></td><td class="empty">&mdash;</td><td><span class="time">8:42am</span></td></tr>
           </tbody>
         </table>
       </div>

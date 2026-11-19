@@ -16,6 +16,12 @@ class TestRender(unittest.TestCase):
                     "status": None,
                     "adjusted": False,
                 },
+                "food_waste": {
+                    "date": "2026-11-19",
+                    "frequency": "Every Thursday",
+                    "status": "In progress",
+                    "adjusted": False,
+                },
             },
             "collections": [
                 {
@@ -30,6 +36,12 @@ class TestRender(unittest.TestCase):
                     "time": "8:31am",
                     "adjusted": False,
                 },
+                {
+                    "date": "2026-10-01",
+                    "service": "food_waste",
+                    "time": "8:15am",
+                    "adjusted": False,
+                },
             ],
         }
         html = render_html(store)
@@ -40,6 +52,9 @@ class TestRender(unittest.TestCase):
         self.assertIn("Fri 2 Oct", html)
         self.assertIn("adjusted", html)
         self.assertIn("&mdash;", html)
+        self.assertIn("@media (max-width: 600px)", html)
+        self.assertNotIn("Food Waste", html)
+        self.assertNotIn("8:15am", html)
 
     def test_render_html_empty_store(self) -> None:
         html = render_html({"updated_at": None, "next_collections": {}, "collections": []})

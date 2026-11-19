@@ -9,6 +9,10 @@ from typing import Any
 from src.parser import ORDERED_SERVICES
 from src.storage import build_weekly_matrix
 
+DISPLAY_SERVICES: tuple[tuple[str, str], ...] = tuple(
+    (key, label) for key, label in ORDERED_SERVICES if key != "food_waste"
+)
+
 
 def format_display_date(iso_or_date: str | date) -> str:
     """Format a date as e.g. 'Thu 12 Nov 2026'."""
@@ -45,7 +49,7 @@ def render_cell(record: dict[str, Any] | None, week_thursday: date) -> str:
 def render_next_cards(next_collections: dict[str, dict[str, Any]]) -> str:
     """Render summary cards for the upcoming scheduled collections."""
     cards: list[str] = []
-    for key, label in ORDERED_SERVICES:
+    for key, label in DISPLAY_SERVICES:
         info = next_collections.get(key)
         if not info:
             continue
@@ -73,20 +77,20 @@ def render_html(store: dict[str, Any]) -> str:
     updated_at = escape(store.get("updated_at") or "Not yet updated")
     next_cards_html = render_next_cards(store.get("next_collections", {}))
 
-    header_cols = "".join(f"<th>{escape(label)}</th>" for _, label in ORDERED_SERVICES)
+    header_cols = "".join(f"<th>{escape(label)}</th>" for _, label in DISPLAY_SERVICES)
 
     body_rows: list[str] = []
     for week_date, services_map in weekly_rows:
         cells = "".join(
             render_cell(services_map.get(key), week_date)
-            for key, _ in ORDERED_SERVICES
+            for key, _ in DISPLAY_SERVICES
         )
         body_rows.append(
             f"<tr><th scope=\"row\">{escape(format_display_date(week_date))}</th>{cells}</tr>"
         )
 
     if not body_rows:
-        colspan = len(ORDERED_SERVICES) + 1
+        colspan = len(DISPLAY_SERVICES) + 1
         body_rows.append(
             f'<tr><td colspan="{colspan}" class="empty">No collections recorded yet.</td></tr>'
         )
@@ -234,6 +238,31 @@ def render_html(store: dict[str, Any]) -> str:
     .badge.status {{
       background: var(--status-bg);
       color: var(--status-text);
+    }}
+    @media (max-width: 600px) {{
+      body {{
+        padding: 1.25rem 0.75rem;
+      }}
+      h1 {{
+        font-size: 1.45rem;
+      }}
+      .cards {{
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }}
+      .card {{
+        padding: 0.75rem 0.9rem;
+      }}
+      table {{
+        font-size: 0.82rem;
+      }}
+      th, td {{
+        padding: 0.55rem 0.45rem;
+      }}
+      thead th,
+      tbody th[scope="row"] {{
+        white-space: normal;
+      }}
     }}
   </style>
 </head>
