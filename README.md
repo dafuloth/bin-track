@@ -1,5 +1,7 @@
 # bin-track
 
+![mockup](mobile_mockup.jpg)
+
 Automated Brent Council bin collection tracker using Python (standard library only), GitHub Actions, and GitHub Pages.
 
 ## How it works
