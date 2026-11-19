@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19 10:18 UTC",
+  "updated_at": "2026-11-19 10:43 UTC",
   "next_collections": {
     "rubbish": {
       "date": "2026-11-26",
@@ -38,6 +38,14 @@
       "service": "paper_cardboard",
       "time": "8:42am",
       "adjusted": false
+    }
+  ],
+  "runs": [
+    {
+      "timestamp": "2026-11-19 10:43 UTC",
+      "outcome": "success",
+      "added": 0,
+      "updated": 0
     }
   ]
 }

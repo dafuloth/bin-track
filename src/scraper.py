@@ -12,7 +12,7 @@ import urllib.request
 
 from src.parser import is_loading_html, parse_waste_html
 from src.render import render_html
-from src.storage import load_store, merge_snapshots, save_store
+from src.storage import load_store, merge_snapshots, record_run, save_store
 
 BASE_URL = "https://recyclingservices.brent.gov.uk/waste/{property_id}"
 USER_AGENT = "bin-track/1.0 (+https://github.com/)"
@@ -58,6 +58,12 @@ def fetch_waste_html(
     raise TimeoutError("WasteWorks page did not finish loading within polling limit.")
 
 
+def _sanitize_error(exc: Exception, property_id: str) -> str:
+    msg = f"{type(exc).__name__}: {exc}"
+    stripped = property_id.strip()
+    return msg.replace(stripped, "***") if stripped else msg
+
+
 def run_scrape(
     property_id: str,
     data_path: Path,
@@ -67,13 +73,24 @@ def run_scrape(
 ) -> None:
     """Scrape current bin collection data, update JSON store, and regenerate HTML."""
     current_time = now or datetime.now(timezone.utc)
-    html = fetch_waste_html(property_id)
-    snapshots = parse_waste_html(html, reference_date=current_time.date())
-    if not snapshots:
-        raise RuntimeError("No waste collection services found in response HTML.")
-
-    store = load_store(data_path)
     updated_at = current_time.strftime("%Y-%m-%d %H:%M UTC")
+    store = load_store(data_path)
+
+    try:
+        html = fetch_waste_html(property_id)
+        snapshots = parse_waste_html(html, reference_date=current_time.date())
+        if not snapshots:
+            raise RuntimeError("No waste collection services found in response HTML.")
+    except Exception as exc:
+        failed_store = record_run(
+            store,
+            timestamp=updated_at,
+            outcome="error",
+            error=_sanitize_error(exc, property_id),
+        )
+        save_store(data_path, failed_store)
+        raise
+
     updated_store = merge_snapshots(store, snapshots, updated_at=updated_at)
     save_store(data_path, updated_store)
 
