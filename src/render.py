@@ -281,7 +281,7 @@ def render_html(store: dict[str, Any]) -> str:
     </section>
 
     <section>
-      <h2>Collection History (Weekly Matrix)</h2>
+      <h2>Collection History</h2>
       <div class="table-wrap">
         <table>
           <thead>
