@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bin Collection Tracker</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --text: #1b1f23;
+      --muted: #57606a;
+      --border: #d0d7de;
+      --accent: #0969da;
+      --adj-bg: #fff8c5;
+      --adj-text: #7d4e00;
+      --status-bg: #ddf4ff;
+      --status-text: #0550ae;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.75rem;
+    }
+    .updated {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .card-date {
+      margin-top: 0.25rem;
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .card-freq {
+      margin-top: 0.15rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.925rem;
+    }
+    th, td {
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    thead th {
+      background: #f0f2f5;
+      font-weight: 600;
+    }
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    tbody th[scope="row"] {
+      font-weight: 600;
+    }
+    td.empty {
+      color: var(--muted);
+    }
+    .time {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+    .badges {
+      margin-top: 0.2rem;
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge.adjusted {
+      background: var(--adj-bg);
+      color: var(--adj-text);
+    }
+    .badge.day {
+      background: #eaeef2;
+      color: var(--text);
+    }
+    .badge.status {
+      background: var(--status-bg);
+      color: var(--status-text);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Bin Collection Tracker</h1>
+      <span class="updated">Last updated: 2026-11-19 09:32 UTC</span>
+    </header>
+
+    <section>
+      <h2>Next Scheduled</h2>
+      <div class="cards">
+        <div class="card"><div class="card-title">Rubbish</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
+        <div class="card"><div class="card-title">Recycling</div><div class="card-date">Thu 19 Nov 2026 <span class="badge status">In progress</span></div><div class="card-freq">Every other Thursday</div></div>
+        <div class="card"><div class="card-title">Food Waste</div><div class="card-date">Thu 19 Nov 2026 <span class="badge status">In progress</span></div><div class="card-freq">Every Thursday</div></div>
+        <div class="card"><div class="card-title">Paper &amp; Cardboard</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Collection History (Weekly Matrix)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Week (Thu)</th>
+              <th>Rubbish</th><th>Recycling</th><th>Food Waste</th><th>Paper &amp; Cardboard</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr><th scope="row">Thu 12 Nov 2026</th><td><span class="time">8:31am</span></td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td><span class="time">8:42am</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
