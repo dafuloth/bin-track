@@ -4,13 +4,7 @@ from datetime import date
 import unittest
 
 from src.parser import ParsedDateInfo, ServiceSnapshot
-from src.storage import (
-    build_weekly_matrix,
-    empty_store,
-    merge_snapshots,
-    record_run,
-    week_thursday,
-)
+from src.storage import build_weekly_matrix, empty_store, merge_snapshots, week_thursday
 
 
 class TestStorage(unittest.TestCase):
@@ -29,12 +23,6 @@ class TestStorage(unittest.TestCase):
         )
         store = merge_snapshots(store, [snap1], updated_at="2026-11-15 15:00 UTC")
         self.assertEqual(len(store["collections"]), 1)
-        self.assertEqual(store["runs"][0], {
-            "timestamp": "2026-11-15 15:00 UTC",
-            "outcome": "success",
-            "added": 1,
-            "updated": 0,
-        })
 
         # Re-scraping the same week should update in place rather than duplicate.
         snap1_updated = ServiceSnapshot(
@@ -46,28 +34,6 @@ class TestStorage(unittest.TestCase):
         store = merge_snapshots(store, [snap1_updated], updated_at="2026-11-19 15:00 UTC")
         self.assertEqual(len(store["collections"]), 1)
         self.assertEqual(store["collections"][0]["time"], "8:32am")
-        self.assertEqual(store["runs"][0], {
-            "timestamp": "2026-11-19 15:00 UTC",
-            "outcome": "success",
-            "added": 0,
-            "updated": 1,
-        })
-        self.assertEqual(len(store["runs"]), 2)
-
-    def test_record_run_caps_history_and_records_errors(self) -> None:
-        store = empty_store()
-        for idx in range(5):
-            store = record_run(
-                store,
-                timestamp=f"2026-11-0{idx + 1} 15:00 UTC",
-                outcome="error",
-                error="TimeoutError: timed out",
-                max_runs=3,
-            )
-        self.assertEqual(len(store["runs"]), 3)
-        self.assertEqual(store["runs"][0]["timestamp"], "2026-11-05 15:00 UTC")
-        self.assertEqual(store["runs"][0]["outcome"], "error")
-        self.assertEqual(store["runs"][0]["error"], "TimeoutError: timed out")
 
     def test_build_weekly_matrix_groups_and_sorts_newest_first(self) -> None:
         collections = [

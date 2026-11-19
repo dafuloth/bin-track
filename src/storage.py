@@ -14,16 +14,12 @@ _SERVICE_ORDER: dict[str, int] = {
 }
 
 
-DEFAULT_MAX_RUNS = 50
-
-
 def empty_store() -> dict[str, Any]:
     """Return an empty canonical collection store."""
     return {
         "updated_at": None,
         "next_collections": {},
         "collections": [],
-        "runs": [],
     }
 
 
@@ -36,7 +32,6 @@ def load_store(path: Path) -> dict[str, Any]:
         "updated_at": data.get("updated_at"),
         "next_collections": data.get("next_collections", {}),
         "collections": data.get("collections", []),
-        "runs": data.get("runs", []),
     }
 
 
@@ -46,36 +41,12 @@ def save_store(path: Path, store: dict[str, Any]) -> None:
     path.write_text(json.dumps(store, indent=2) + "\n", encoding="utf-8")
 
 
-def record_run(
-    store: dict[str, Any],
-    *,
-    timestamp: str,
-    outcome: str,
-    added: int = 0,
-    updated: int = 0,
-    error: str | None = None,
-    max_runs: int = DEFAULT_MAX_RUNS,
-) -> dict[str, Any]:
-    """Prepend a run log entry to the store, keeping at most max_runs entries."""
-    entry: dict[str, Any] = {
-        "timestamp": timestamp,
-        "outcome": outcome,
-        "added": added,
-        "updated": updated,
-    }
-    if error is not None:
-        entry["error"] = error
-
-    runs = [entry, *store.get("runs", [])][:max_runs]
-    return {**store, "runs": runs}
-
-
 def merge_snapshots(
     store: dict[str, Any],
     snapshots: list[ServiceSnapshot],
     updated_at: str,
 ) -> dict[str, Any]:
-    """Merge newly scraped service snapshots into the canonical store and log the run."""
+    """Merge newly scraped service snapshots into the canonical store."""
     by_key: dict[tuple[str, str], dict[str, Any]] = {
         (row["date"], row["service"]): dict(row)
         for row in store.get("collections", [])
@@ -83,8 +54,6 @@ def merge_snapshots(
     next_collections: dict[str, dict[str, Any]] = dict(
         store.get("next_collections", {})
     )
-    added = 0
-    updated = 0
 
     for snap in snapshots:
         if snap.next_collection is not None:
@@ -97,19 +66,12 @@ def merge_snapshots(
 
         if snap.last_collection is not None:
             iso_date = snap.last_collection.collection_date.isoformat()
-            key = (iso_date, snap.service)
-            new_row = {
+            by_key[(iso_date, snap.service)] = {
                 "date": iso_date,
                 "service": snap.service,
                 "time": snap.last_collection.time,
                 "adjusted": snap.last_collection.adjusted,
             }
-            existing = by_key.get(key)
-            if existing is None:
-                added += 1
-            elif existing != new_row:
-                updated += 1
-            by_key[key] = new_row
 
     sorted_collections = sorted(
         by_key.values(),
@@ -117,13 +79,11 @@ def merge_snapshots(
         reverse=True,
     )
 
-    merged = {
+    return {
         "updated_at": updated_at,
         "next_collections": next_collections,
         "collections": sorted_collections,
-        "runs": store.get("runs", []),
     }
-    return record_run(merged, timestamp=updated_at, outcome="success", added=added, updated=updated)
 
 
 def week_thursday(collection_date: date) -> date:
