@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19 10:50 UTC",
+  "updated_at": "2026-11-19 11:37 UTC",
   "next_collections": {
     "rubbish": {
       "date": "2026-11-26",
@@ -8,15 +8,15 @@
       "adjusted": false
     },
     "recycling": {
-      "date": "2026-11-19",
+      "date": "2026-12-03",
       "frequency": "Every other Thursday",
-      "status": "In progress",
+      "status": null,
       "adjusted": false
     },
     "food_waste": {
-      "date": "2026-11-19",
+      "date": "2026-11-26",
       "frequency": "Every Thursday",
-      "status": "In progress",
+      "status": null,
       "adjusted": false
     },
     "paper_cardboard": {
@@ -27,6 +27,18 @@
     }
   },
   "collections": [
+    {
+      "date": "2026-11-19",
+      "service": "recycling",
+      "time": "11:15am",
+      "adjusted": false
+    },
+    {
+      "date": "2026-11-19",
+      "service": "food_waste",
+      "time": "11:15am",
+      "adjusted": false
+    },
     {
       "date": "2026-11-12",
       "service": "rubbish",
