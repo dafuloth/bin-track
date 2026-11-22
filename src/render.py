@@ -13,6 +13,10 @@ DISPLAY_SERVICES: tuple[tuple[str, str], ...] = tuple(
     (key, label) for key, label in ORDERED_SERVICES if key != "food_waste"
 )
 
+TABLE_COLUMN_LABELS: dict[str, str] = {
+    "paper_cardboard": "Paper",
+}
+
 
 def format_display_date(iso_or_date: str | date) -> str:
     """Format a date as e.g. 'Thu 12 Nov 2026'."""
@@ -77,7 +81,10 @@ def render_html(store: dict[str, Any]) -> str:
     updated_at = escape(store.get("updated_at") or "Not yet updated")
     next_cards_html = render_next_cards(store.get("next_collections", {}))
 
-    header_cols = "".join(f"<th>{escape(label)}</th>" for _, label in DISPLAY_SERVICES)
+    header_cols = "".join(
+        f"<th>{escape(TABLE_COLUMN_LABELS.get(key, label))}</th>"
+        for key, label in DISPLAY_SERVICES
+    )
 
     body_rows: list[str] = []
     for week_date, services_map in weekly_rows:

@@ -22,6 +22,12 @@ class TestRender(unittest.TestCase):
                     "status": "In progress",
                     "adjusted": False,
                 },
+                "paper_cardboard": {
+                    "date": "2026-11-26",
+                    "frequency": "Every other Thursday",
+                    "status": None,
+                    "adjusted": False,
+                },
             },
             "collections": [
                 {
@@ -46,6 +52,8 @@ class TestRender(unittest.TestCase):
         }
         html = render_html(store)
         self.assertIn("Bin Collection Tracker", html)
+        self.assertIn('<div class="card-title">Paper &amp; Cardboard</div>', html)
+        self.assertIn("<th>Paper</th>", html)
         self.assertIn("Thu 1 Oct 2026", html)
         self.assertIn("8:31am", html)
         self.assertIn("9:30am", html)
