@@ -2,8 +2,8 @@ name: Scrape Bin Collections
 
 on:
   schedule:
-    # Every Sunday at 15:23 UTC (3:23 pm GMT / 4:23 pm BST)
-    - cron: "23 15 * * 0"
+    # Every Friday at 15:23 UTC (3:23 pm GMT / 4:23 pm BST)
+    - cron: "23 15 * * 5"
   workflow_dispatch:
 
 permissions:
