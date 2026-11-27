@@ -67,6 +67,23 @@ class TestRender(unittest.TestCase):
     def test_render_html_empty_store(self) -> None:
         html = render_html({"updated_at": None, "next_collections": {}, "collections": []})
         self.assertIn("No collections recorded yet.", html)
+        self.assertNotIn('<p class="sync-status', html)
+
+    def test_render_html_sync_status_variants(self) -> None:
+        base_store = {"updated_at": "2026-11-27 15:11 UTC", "next_collections": {}, "collections": []}
+
+        scheduled_html = render_html({**base_store, "updated_source": "schedule"})
+        self.assertIn('<p class="sync-status scheduled">Sync source: GitHub Actions scheduled run</p>', scheduled_html)
+        self.assertLess(scheduled_html.index("sync-status"), scheduled_html.index("<h2>Next Scheduled</h2>"))
+
+        manual_html = render_html({**base_store, "updated_source": "workflow_dispatch"})
+        self.assertIn('<p class="sync-status manual">Sync source: Manual / launchd run</p>', manual_html)
+
+        local_html = render_html({**base_store, "updated_source": "local"})
+        self.assertIn('<p class="sync-status local">Sync source: Local run</p>', local_html)
+
+        none_html = render_html({**base_store, "updated_source": None})
+        self.assertNotIn('<p class="sync-status', none_html)
 
 
 if __name__ == "__main__":

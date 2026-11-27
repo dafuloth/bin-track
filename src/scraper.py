@@ -58,12 +58,21 @@ def fetch_waste_html(
     raise TimeoutError("WasteWorks page did not finish loading within polling limit.")
 
 
+def resolve_updated_source(github_event_name: str | None) -> str:
+    """Map GitHub Actions event names to canonical sync source identifiers."""
+    event = (github_event_name or "").strip()
+    if event in ("schedule", "workflow_dispatch"):
+        return event
+    return "local"
+
+
 def run_scrape(
     property_id: str,
     data_path: Path,
     html_path: Path,
     *,
     now: datetime | None = None,
+    updated_source: str | None = None,
 ) -> None:
     """Scrape current bin collection data, update JSON store, and regenerate HTML."""
     current_time = now or datetime.now(timezone.utc)
@@ -74,7 +83,12 @@ def run_scrape(
 
     store = load_store(data_path)
     updated_at = current_time.strftime("%Y-%m-%d %H:%M UTC")
-    updated_store = merge_snapshots(store, snapshots, updated_at=updated_at)
+    updated_store = merge_snapshots(
+        store,
+        snapshots,
+        updated_at=updated_at,
+        updated_source=updated_source,
+    )
     save_store(data_path, updated_store)
 
     html_path.parent.mkdir(parents=True, exist_ok=True)
@@ -90,8 +104,9 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parent.parent
     data_path = repo_root / "data" / "collections.json"
     html_path = repo_root / "docs" / "index.html"
+    updated_source = resolve_updated_source(os.environ.get("GITHUB_EVENT_NAME"))
 
-    run_scrape(property_id, data_path, html_path)
+    run_scrape(property_id, data_path, html_path, updated_source=updated_source)
     print(f"Updated {data_path.relative_to(repo_root)} and {html_path.relative_to(repo_root)}.")
     return 0
 

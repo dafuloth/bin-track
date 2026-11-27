@@ -18,6 +18,7 @@ def empty_store() -> dict[str, Any]:
     """Return an empty canonical collection store."""
     return {
         "updated_at": None,
+        "updated_source": None,
         "next_collections": {},
         "collections": [],
     }
@@ -30,6 +31,7 @@ def load_store(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     return {
         "updated_at": data.get("updated_at"),
+        "updated_source": data.get("updated_source"),
         "next_collections": data.get("next_collections", {}),
         "collections": data.get("collections", []),
     }
@@ -45,6 +47,7 @@ def merge_snapshots(
     store: dict[str, Any],
     snapshots: list[ServiceSnapshot],
     updated_at: str,
+    updated_source: str | None = None,
 ) -> dict[str, Any]:
     """Merge newly scraped service snapshots into the canonical store."""
     by_key: dict[tuple[str, str], dict[str, Any]] = {
@@ -81,6 +84,7 @@ def merge_snapshots(
 
     return {
         "updated_at": updated_at,
+        "updated_source": updated_source,
         "next_collections": next_collections,
         "collections": sorted_collections,
     }

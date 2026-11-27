@@ -75,10 +75,28 @@ def render_next_cards(next_collections: dict[str, dict[str, Any]]) -> str:
     return "\n        ".join(cards)
 
 
+_SYNC_STATUS_LABELS: dict[str, tuple[str, str]] = {
+    "schedule": ("scheduled", "Sync source: GitHub Actions scheduled run"),
+    "workflow_dispatch": ("manual", "Sync source: Manual / launchd run"),
+    "local": ("local", "Sync source: Local run"),
+}
+
+
+def render_sync_status(updated_source: str | None) -> str:
+    """Render the sync-source status line, or an empty string if unknown."""
+    entry = _SYNC_STATUS_LABELS.get(updated_source or "")
+    if entry is None:
+        return ""
+    css_class, label = entry
+    return f'<p class="sync-status {css_class}">{escape(label)}</p>'
+
+
 def render_html(store: dict[str, Any]) -> str:
     """Render the complete standalone HTML page from the canonical store."""
     weekly_rows = build_weekly_matrix(store.get("collections", []))
     updated_at = escape(store.get("updated_at") or "Not yet updated")
+    sync_status = render_sync_status(store.get("updated_source"))
+    sync_status_html = f"\n    {sync_status}\n" if sync_status else "\n"
     next_cards_html = render_next_cards(store.get("next_collections", {}))
 
     header_cols = "".join(
@@ -122,6 +140,9 @@ def render_html(store: dict[str, Any]) -> str:
       --adj-text: #7d4e00;
       --status-bg: #ddf4ff;
       --status-text: #0550ae;
+      --sched-bg: #dafbe1;
+      --sched-text: #116329;
+      --sched-border: #aceebb;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -151,6 +172,21 @@ def render_html(store: dict[str, Any]) -> str:
     .updated {{
       color: var(--muted);
       font-size: 0.875rem;
+    }}
+    .sync-status {{
+      margin: 0 0 1.25rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }}
+    .sync-status.scheduled {{
+      background: var(--sched-bg);
+      border-color: var(--sched-border);
+      color: var(--sched-text);
+      font-weight: 500;
     }}
     h2 {{
       font-size: 1.1rem;
@@ -279,7 +315,7 @@ def render_html(store: dict[str, Any]) -> str:
       <h1>Bin Collection Tracker</h1>
       <span class="updated">Last updated: {updated_at}</span>
     </header>
-
+{sync_status_html}
     <section>
       <h2>Next Scheduled</h2>
       <div class="cards">

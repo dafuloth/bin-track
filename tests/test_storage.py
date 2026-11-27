@@ -15,14 +15,21 @@ class TestStorage(unittest.TestCase):
 
     def test_merge_snapshots_deduplicates_and_updates(self) -> None:
         store = empty_store()
+        self.assertIsNone(store["updated_source"])
         snap1 = ServiceSnapshot(
             service="rubbish",
             frequency="Every other Thursday",
             next_collection=ParsedDateInfo(date(2026, 11, 26), None, False, None),
             last_collection=ParsedDateInfo(date(2026, 11, 12), "8:31am", False, None),
         )
-        store = merge_snapshots(store, [snap1], updated_at="2026-11-15 15:00 UTC")
+        store = merge_snapshots(
+            store,
+            [snap1],
+            updated_at="2026-11-15 15:00 UTC",
+            updated_source="schedule",
+        )
         self.assertEqual(len(store["collections"]), 1)
+        self.assertEqual(store["updated_source"], "schedule")
 
         # Re-scraping the same week should update in place rather than duplicate.
         snap1_updated = ServiceSnapshot(
@@ -31,9 +38,15 @@ class TestStorage(unittest.TestCase):
             next_collection=ParsedDateInfo(date(2026, 11, 26), None, False, None),
             last_collection=ParsedDateInfo(date(2026, 11, 12), "8:32am", False, None),
         )
-        store = merge_snapshots(store, [snap1_updated], updated_at="2026-11-19 15:00 UTC")
+        store = merge_snapshots(
+            store,
+            [snap1_updated],
+            updated_at="2026-11-19 15:00 UTC",
+            updated_source="workflow_dispatch",
+        )
         self.assertEqual(len(store["collections"]), 1)
         self.assertEqual(store["collections"][0]["time"], "8:32am")
+        self.assertEqual(store["updated_source"], "workflow_dispatch")
 
     def test_build_weekly_matrix_groups_and_sorts_newest_first(self) -> None:
         collections = [
