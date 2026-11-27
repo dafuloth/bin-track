@@ -6,7 +6,7 @@ Automated Brent Council bin collection tracker using Python (standard library on
 
 ## How it works
 
-1. Every Friday afternoon (`23 15 * * 5` UTC), `.github/workflows/scrape.yml` runs the scraper.
+1. Every Friday afternoon (`11 15 * * 5` UTC), `.github/workflows/scrape.yml` runs the scraper.
 2. Results are deduplicated and merged into `data/collections.json`.
 3. `docs/index.html` is regenerated with a **Next Scheduled** summary and a **Weekly Matrix** table, then committed back to the repo.
 
