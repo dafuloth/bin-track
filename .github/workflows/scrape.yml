@@ -4,6 +4,8 @@ on:
   schedule:
     # Every Friday at 15:23 UTC (3:23 pm GMT / 4:23 pm BST)
     - cron: "23 15 * * 5"
+    # Temporary test schedule — remove after verifying
+    - cron: "38 17 * * 5"
   workflow_dispatch:
 
 permissions:
