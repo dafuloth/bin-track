@@ -2,10 +2,9 @@ name: Scrape Bin Collections
 
 on:
   schedule:
-    # Every Friday at 15:23 UTC (3:23 pm GMT / 4:23 pm BST)
-    - cron: "23 15 * * 5"
-    # Temporary test schedule — remove after verifying
-    - cron: "38 19 * * 5"
+    # Every Friday at 15:11 UTC (3:11 pm GMT / 4:11 pm BST)
+    - cron: "11 15 * * 5"
+
   workflow_dispatch:
 
 permissions:
