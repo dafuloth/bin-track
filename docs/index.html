@@ -16,6 +16,9 @@
       --adj-text: #7d4e00;
       --status-bg: #ddf4ff;
       --status-text: #0550ae;
+      --sched-bg: #dafbe1;
+      --sched-text: #116329;
+      --sched-border: #aceebb;
     }
     * { box-sizing: border-box; }
     body {
@@ -45,6 +48,21 @@
     .updated {
       color: var(--muted);
       font-size: 0.875rem;
+    }
+    .sync-status {
+      margin: 0 0 1.25rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .sync-status.scheduled {
+      background: var(--sched-bg);
+      border-color: var(--sched-border);
+      color: var(--sched-text);
+      font-weight: 500;
     }
     h2 {
       font-size: 1.1rem;
@@ -171,29 +189,32 @@
   <main>
     <header>
       <h1>Bin Collection Tracker</h1>
-      <span class="updated">Last updated: 2026-11-19 11:37 UTC</span>
+      <span class="updated">Last updated: 2026-11-27 21:16 UTC</span>
     </header>
+
+    <p class="sync-status manual">Sync source: Manual / launchd run</p>
 
     <section>
       <h2>Next Scheduled</h2>
       <div class="cards">
-        <div class="card"><div class="card-title">Rubbish</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
+        <div class="card"><div class="card-title">Rubbish</div><div class="card-date">Thu 10 Dec 2026</div><div class="card-freq">Every other Thursday</div></div>
         <div class="card"><div class="card-title">Recycling</div><div class="card-date">Thu 3 Dec 2026</div><div class="card-freq">Every other Thursday</div></div>
-        <div class="card"><div class="card-title">Paper &amp; Cardboard</div><div class="card-date">Thu 26 Nov 2026</div><div class="card-freq">Every other Thursday</div></div>
+        <div class="card"><div class="card-title">Paper &amp; Cardboard</div><div class="card-date">Thu 10 Dec 2026</div><div class="card-freq">Every other Thursday</div></div>
       </div>
     </section>
 
     <section>
-      <h2>Collection History (Weekly Matrix)</h2>
+      <h2>Collection History</h2>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Week (Thu)</th>
-              <th>Rubbish</th><th>Recycling</th><th>Paper &amp; Cardboard</th>
+              <th>Rubbish</th><th>Recycling</th><th>Paper</th>
             </tr>
           </thead>
           <tbody>
+          <tr><th scope="row">Thu 26 Nov 2026</th><td><span class="time">8:47am</span></td><td class="empty">&mdash;</td><td><span class="time">9:07am</span></td></tr>
           <tr><th scope="row">Thu 19 Nov 2026</th><td class="empty">&mdash;</td><td><span class="time">11:15am</span></td><td class="empty">&mdash;</td></tr>
           <tr><th scope="row">Thu 12 Nov 2026</th><td><span class="time">8:31am</span></td><td class="empty">&mdash;</td><td><span class="time">8:42am</span></td></tr>
           </tbody>
